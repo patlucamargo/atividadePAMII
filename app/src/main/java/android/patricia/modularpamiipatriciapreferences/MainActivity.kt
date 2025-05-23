@@ -4,17 +4,20 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.patricia.modularpamiipatriciapreferences.databinding.ActivityMainBinding
+import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private var cor = ""
     private lateinit var preferences: SharedPreferences
 
-    companion object{
+    companion object {
         const val NOME_ARQUIVO = "arquivo_prefs.xml"
     }
 
@@ -25,31 +28,45 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.cor1.setOnClickListener{
+        binding.cor1.setOnClickListener {
             cor = "#673AB7"
-            binding.layoutPrincipal.setBackgroundColor(Color.parseColor(cor))
+            salvarCor(cor)
         }
 
-        binding.cor2.setOnClickListener{
+        binding.cor2.setOnClickListener {
             cor = "#3F51B5"
-            binding.layoutPrincipal.setBackgroundColor(Color.parseColor(cor))
+            salvarCor(cor)
         }
 
-        binding.cor3.setOnClickListener{
+        binding.cor3.setOnClickListener {
             cor = "#2196F3"
-            binding.layoutPrincipal.setBackgroundColor(Color.parseColor(cor))
+            salvarCor(cor)
         }
 
-        binding.cor4.setOnClickListener{
+        binding.cor4.setOnClickListener {
             cor = "#00BCD4"
-            binding.layoutPrincipal.setBackgroundColor(Color.parseColor(cor))
+            salvarCor(cor)
         }
 
-        binding.cor5.setOnClickListener{
+        binding.cor5.setOnClickListener {
             cor = "#009688"
-            binding.layoutPrincipal.setBackgroundColor(Color.parseColor(cor))
+            salvarCor(cor)
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        var preferencias = getSharedPreferences(NOME_ARQUIVO, MODE_PRIVATE)
+        var cor = preferencias.getString("cor", "")
+
+        if (cor!!.isNotBlank()) {
+            binding.layoutPrincipal.setBackgroundColor(Color.parseColor(cor))
+        }
+    }
+    
+    private fun salvarCor(cor: String) {
         binding.trocarCor.setOnClickListener {
             binding.layoutPrincipal.setBackgroundColor(Color.parseColor(cor))
             val preferences = getSharedPreferences(NOME_ARQUIVO, MODE_PRIVATE)
@@ -59,10 +76,22 @@ class MainActivity : AppCompatActivity() {
             editor.putString("sobrenome", "Camargo")
             editor.putString("email", "plcamargo@gmail.com")
             editor.apply()
+
+            snackbar(binding.root)
+
+        }
+    }
+
+    private fun snackbar(view:View) {
+        var snackbar =
+            Snackbar.make(view, "Cor de fundo salva com sucesso!", Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction("ok") {
         }
 
-    }
-    private fun salvarCor(cor:String) {
+        snackbar.setActionTextColor(Color.BLUE)
+        snackbar.setBackgroundTint(Color.LTGRAY)
+        snackbar.setTextColor(Color.GREEN)
+        snackbar.show()
 
     }
 
